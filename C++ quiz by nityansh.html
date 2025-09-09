@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Quiz by Nityansh</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .front-page {
+      margin-top: 150px;
+    }
+    .front-page h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .front-page p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ffcc00;
+      color: #000;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ffaa00;
+    }
+    .question-container {
+      display: none;
+    }
+    .question {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      text-align: left;
+    }
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      background: #444;
+      color: #fff;
+      text-align: left;
+    }
+    .options button.correct {
+      background: green !important;
+    }
+    .options button.wrong {
+      background: red !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Front Page -->
+    <div class="front-page" id="frontPage">
+      <h1>Made by Nityansh</h1>
+      <p>"Pass hone ke liye 50 me 40 le aao"</p>
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <!-- Quiz Page -->
+    <div class="question-container" id="quizContainer">
+      <h2 id="questionNumber"></h2>
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <button onclick="nextQuestion()">Next</button>
+      <p id="score"></p>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Which feature of OOP ensures code reusability?", options: ["Encapsulation", "Polymorphism", "Inheritance", "Abstraction"], answer: 2 },
+      { q: "Which is the correct syntax to include header in C++?", options: ["import<iostream>", "#include<iostream>", "#using<iostream>", "load<iostream>"], answer: 1 },
+      { q: "Which concept binds data and functions together?", options: ["Polymorphism", "Encapsulation", "Abstraction", "Inheritance"], answer: 1 },
+      { q: "Which operator is used for input in C++?", options: ["<<", ">>", "::", ","], answer: 1 },
+      { q: "Which operator is used for output in C++?", options: ["<<", ">>", ":", "."], answer: 0 },
+      { q: "Which of the following is NOT a valid identifier?", options: ["_name", "2value", "var_123", "myVar"], answer: 1 },
+      { q: "Default return type of main() in C++?", options: ["void", "int", "float", "char"], answer: 1 },
+      { q: "Which of these is a user-defined data type?", options: ["int", "float", "struct", "double"], answer: 2 },
+      { q: "Which function is automatically called when object is created?", options: ["Destructor", "Constructor", "Virtual", "Inline"], answer: 1 },
+      { q: "Which function is called when object is destroyed?", options: ["Destructor", "Constructor", "Inline", "Virtual"], answer: 0 },
+      { q: "What does inline function do?", options: ["Saves memory", "Expands code at compile time", "Calls recursively", "Hides implementation"], answer: 1 },
+      { q: "Friend function can access?", options: ["Private members", "Only public members", "Protected only", "None"], answer: 0 },
+      { q: "Which keyword is used to define constant?", options: ["final", "const", "static", "immutable"], answer: 1 },
+      { q: "Which access specifier is NOT in C++?", options: ["private", "public", "protected", "internal"], answer: 3 },
+      { q: "Which keyword is used for dynamic memory allocation?", options: ["malloc", "alloc", "new", "calloc"], answer: 2 },
+      { q: "Which keyword frees dynamically allocated memory?", options: ["delete", "free", "remove", "clear"], answer: 0 },
+      { q: "What is function overloading?", options: ["Same name different parameters", "Different names same parameters", "Same name same parameters", "None"], answer: 0 },
+      { q: "Which of these cannot be overloaded?", options: ["+", "-", "?", "++"], answer: 2 },
+      { q: "Default arguments are evaluated from?", options: ["Left to right", "Right to left", "Random", "Depends on compiler"], answer: 1 },
+      { q: "Which of these is NOT storage class?", options: ["auto", "register", "static", "mutable"], answer: 3 },
+      { q: "Which keyword defines scope resolution?", options: [".", "::", "->", ":"], answer: 1 },
+      { q: "Which operator is overloaded for input?", options: ["<<", ">>", "::", "."], answer: 1 },
+      { q: "Which operator is overloaded for output?", options: ["<<", ">>", "::", "."], answer: 0 },
+      { q: "Which statement ends a C++ program successfully?", options: ["return 0;", "exit();", "stop;", "break;"], answer: 0 },
+      { q: "Inline functions are best used when?", options: ["Large code", "Small code", "Recursive code", "When private"], answer: 1 },
+      { q: "Which header includes cin and cout?", options: ["<iostream>", "<stdio.h>", "<stream>", "<stdlib.h>"], answer: 0 },
+      { q: "Which function allows function to accept variable number of arguments?", options: ["main()", "printf()", "cin()", "va_arg()"], answer: 3 },
+      { q: "Which type of function cannot be a friend?", options: ["Normal", "Static", "Inline", "Virtual"], answer: 3 },
+      { q: "Which keyword is used to prevent function overriding?", options: ["final", "sealed", "const", "static"], answer: 0 },
+      { q: "Which function cannot return value?", options: ["void", "int", "float", "double"], answer: 0 },
+      { q: "Which function is mandatory in every C++ program?", options: ["main()", "start()", "execute()", "begin()"], answer: 0 },
+      { q: "Which OOP feature allows multiple forms?", options: ["Encapsulation", "Polymorphism", "Inheritance", "Abstraction"], answer: 1 },
+      { q: "Which function executes first in a C++ program?", options: ["main()", "constructor", "inline", "destructor"], answer: 0 },
+      { q: "Which is not an OOP concept?", options: ["Abstraction", "Encapsulation", "Polymorphism", "Compilation"], answer: 3 },
+      { q: "Which symbol is used for scope resolution?", options: ["::", "->", ".", ":"], answer: 0 },
+      { q: "Which keyword creates reference variable?", options: ["ref", "&", "->", "*"], answer: 1 },
+      { q: "Which type of argument keeps original value unchanged?", options: ["Call by value", "Call by reference", "Pointer", "Static"], answer: 0 },
+      { q: "Which type of argument changes original value?", options: ["Call by value", "Call by reference", "Inline", "Overloaded"], answer: 1 },
+      { q: "Which function runs automatically without call?", options: ["Constructor", "Friend", "Inline", "Virtual"], answer: 0 },
+      { q: "Which function releases resources before object deletion?", options: ["Destructor", "Constructor", "Inline", "Virtual"], answer: 0 },
+      { q: "Which storage class keeps value across function calls?", options: ["auto", "register", "static", "mutable"], answer: 2 },
+      { q: "Which storage class requests CPU register?", options: ["auto", "register", "static", "extern"], answer: 1 },
+      { q: "Which type is best for true/false?", options: ["bool", "int", "char", "float"], answer: 0 },
+      { q: "Which keyword is used to hide implementation details?", options: ["Encapsulation", "Abstraction", "Polymorphism", "Inheritance"], answer: 1 },
+      { q: "What is sizeof(char) in C++?", options: ["1 byte", "2 bytes", "4 bytes", "Compiler dependent"], answer: 0 },
+      { q: "Which operator is used to access class members?", options: [".", "->", "::", ","], answer: 0 },
+      { q: "Which operator is used to access members using pointer?", options: [".", "->", "::", ","], answer: 1 },
+      { q: "Which keyword is used for inheritance?", options: ["inherits", "extends", ":", "derived"], answer: 2 },
+      { q: "Which data type can store multiple data types?", options: ["struct", "class", "union", "array"], answer: 2 },
+      { q: "Which keyword makes constant value unchangeable?", options: ["static", "const", "immutable", "fixed"], answer: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function startQuiz() {
+      document.getElementById("frontPage").style.display = "none";
+      document.getElementById("quizContainer").style.display = "block";
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      let q = questions[currentQuestion];
+      document.getElementById("questionNumber").innerText = "Question " + (currentQuestion + 1) + " of " + questions.length;
+      document.getElementById("question").innerText = q.q;
+      let optionsHtml = "";
+      q.options.forEach((opt, i) => {
+        optionsHtml += `<button onclick="checkAnswer(${i}, this)">${opt}</button>`;
+      });
+      document.getElementById("options").innerHTML = optionsHtml;
+    }
+
+    function checkAnswer(selected, btn) {
+      let correct = questions[currentQuestion].answer;
+      let optionButtons = document.querySelectorAll("#options button");
+      optionButtons.forEach((button, index) => {
+        if (index === correct) {
+          button.classList.add("correct");
+        }
+        if (index === selected && selected !== correct) {
+          button.classList.add("wrong");
+        }
+        button.disabled = true;
+      });
+      if (selected === correct) score++;
+      document.getElementById("score").innerText = "Score: " + score;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        document.getElementById("quizContainer").innerHTML = `<h2>Quiz Finished!</h2><p>Your Score: ${score} / ${questions.length}</p><h3>${score >= 40 ? "🎉 Congratulations! You Passed!" : "❌ Better luck next time!"}</h3>`;
+      }
+    }
+  </script>
+</body>
+</html>
